@@ -94,6 +94,23 @@ def dst():
 
         pass
 
+def quickscan():
+        for qsScan_hosts in HOST:
+            for qsScan_ports in range(a, b+1): #One-up b due to not scanning the last port without the one-up.
+                try:
+                        print("SOCKET OPEN")
+                        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP/IP. Starts or restarts socket.
+                        qsSetup_HOST = socket.gethostbyname(qsScan_hosts)
+                        sock.connect((qsSetup_HOST, qsScan_ports)) #Connects socket.
+                        qsVersion = sock.recv(1024).decode("utf-8") #Fetches bytes from the host
+                        print("Host: ", qsSetup_HOST, "Port: ", qsScan_ports, "Version: ", qsVersion, "<OPEN")
+                        sock.close() #Closes socket so that it can be re-used.
+                        print("SOCKET CLOSED")
+                except:
+                        print("Host: ", qsScan_hosts, "Ports: ", qsScan_ports, "<CLOSED")
+                        sock.close() #Closes socket so that it can be re-used.
+                        print("SOCKET CLOSED. Caused by exception.") 
+                        
 
 def portscan():
     while True:
@@ -112,28 +129,31 @@ def portscan():
                         sock.close() #Closes socket so that it can be re-used.
                         print("SOCKET CLOSED")
                     except:
-                        print("Host: ", Setup_HOST, "Ports: ", Scan_ports, "<CLOSED")
+                        print("Host: ", Setup_HOST, "Port: ", Scan_ports, "<CLOSED")
                         sock.close() #Closes socket so that it can be re-used.
                         print("SOCKET CLOSED. Caused by exception.")
 
         elif prompt == "qs":
-            a = input("First Port: ") #Use integer
-            b = input("Last Port: ") #Use integer
-            for qsScan_hosts in HOST:
-                for qsScan_ports in range(a, b+1): #One-up b due to not scanning the last port without the one-up.
-                        try:
-                            print("SOCKET OPEN")
-                            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP/IP. Starts or restarts socket.
-                            qsSetup_HOST = socket.gethostbyname(qsScan_hosts)
-                            sock.connect((qsSetup_HOST, qsScan_ports)) #Connects socket.
-                            qsVersion = sock.recv(1024).decode("utf-8") #Fetches bytes from the host
-                            print("Host: ", qsSetup_HOST, "Port: ", qsScan_ports, "Version: ", qsVersion, "<OPEN")
-                            sock.close() #Closes socket so that it can be re-used.
-                            print("SOCKET CLOSED")
-                        except:
-                            print("Host: ", qsScan_hosts, "Ports: ", qsScan_ports, "<CLOSED")
-                            sock.close() #Closes socket so that it can be re-used.
-                            print("SOCKET CLOSED. Caused by exception.")                                
+            try:
+                a = int(input("First Port: ")) #Use integer
+                b = int(input("Last Port: ")) #Use integer
+                for qsScan_hosts in HOST:
+                    for qsScan_ports in range(a, b+1): #One-up b due to not scanning the last port without the one-up.
+                            try:
+                                print("SOCKET OPEN")
+                                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP/IP. Starts or restarts socket.
+                                qsSetup_HOST = socket.gethostbyname(qsScan_hosts)
+                                sock.connect((qsSetup_HOST, qsScan_ports)) #Connects socket.
+                                qsVersion = sock.recv(1024).decode("utf-8") #Fetches bytes from the host
+                                print("Host: ", qsSetup_HOST, "Port: ", qsScan_ports, "Version: ", qsVersion, "<OPEN")
+                                sock.close() #Closes socket so that it can be re-used.
+                                print("SOCKET CLOSED")
+                            except:
+                                print("Host: ", qsScan_hosts, "Port: ", qsScan_ports, "<CLOSED")
+                                sock.close() #Closes socket so that it can be re-used.
+                                print("SOCKET CLOSED. Caused by exception.")
+            except:
+                print("Not an integer.")                                
 
         elif prompt == "cmds":
             print("start <- Start portscan", "qs <- Quickscan if you want to use range instead of manually input ports", "results <- Show config results",  "dst <- Go to Destination/target config", "main <- Return to the main unit", sep="\n")
