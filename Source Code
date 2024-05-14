@@ -103,25 +103,49 @@ def portscan():
             for Scan_hosts in HOST: #Iterates through HOST list
                 for Scan_ports in PORTS: #Iterates through PORTS list
                     try:
-                        print("Socket opened.")
+                        print("SOCKET OPEN")
                         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP/IP. Starts or restarts socket.
                         Setup_HOST = socket.gethostbyname(Scan_hosts)
                         sock.connect((Setup_HOST, Scan_ports)) #Connects socket.
-                        print(Setup_HOST, Scan_ports, "<Open")
+                        Version = sock.recv(1024).decode("utf-8") #Fetches bytes from the host
+                        print("Host: ", Setup_HOST, "Port:", Scan_ports, "Version:", Version, "<OPEN")
                         sock.close() #Closes socket so that it can be re-used.
-                        print("Socket closed.")
+                        print("SOCKET CLOSED")
                     except:
-                        print(Setup_HOST, Scan_ports, "<Closed")
+                        print("Host: ", Setup_HOST, "Ports: ", Scan_ports, "<CLOSED")
                         sock.close() #Closes socket so that it can be re-used.
-                        print("Socket closed. Caused by exception.")
+                        print("SOCKET CLOSED. Caused by exception.")
+
+        elif prompt == "qs":
+            a = input("First Port: ") #Use integer
+            b = input("Last Port: ") #Use integer
+            for qsScan_hosts in HOST:
+                for qsScan_ports in range(a, b+1): #One-up b due to not scanning the last port without the one-up.
+                        try:
+                            print("SOCKET OPEN")
+                            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP/IP. Starts or restarts socket.
+                            qsSetup_HOST = socket.gethostbyname(qsScan_hosts)
+                            sock.connect((qsSetup_HOST, qsScan_ports)) #Connects socket.
+                            qsVersion = sock.recv(1024).decode("utf-8") #Fetches bytes from the host
+                            print("Host: ", qsSetup_HOST, "Port: ", qsScan_ports, "Version: ", qsVersion, "<OPEN")
+                            sock.close() #Closes socket so that it can be re-used.
+                            print("SOCKET CLOSED")
+                        except:
+                            print("Host: ", qsScan_hosts, "Ports: ", qsScan_ports, "<CLOSED")
+                            sock.close() #Closes socket so that it can be re-used.
+                            print("SOCKET CLOSED. Caused by exception.")                                
 
         elif prompt == "cmds":
-            print("start <- Start portscan",  "dst <- Go to Destination/target config", "main <- Return to the main unit", sep="\n")
+            print("start <- Start portscan", "qs <- Quickscan if you want to use range instead of manually input ports", "results <- Show config results",  "dst <- Go to Destination/target config", "main <- Return to the main unit", sep="\n")
         
         elif prompt == "dst":
             dst()
             sock.close()
             break
+
+        elif prompt == "results":
+            print("Dsts/Targets: ", HOST)
+            print("Ports: ", PORTS)
 
         elif prompt == "main":
             main()
