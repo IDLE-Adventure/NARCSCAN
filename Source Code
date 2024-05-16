@@ -1,4 +1,5 @@
 """
+Copyright 2024 IDLE-Adventure
 Made by github.com/IDLE-Adventure
 A basic portscanner in Python with some taste added to it in regards to navigation and cmds.
 Most of the print statements are for information gathering and can be blocked out with a simple # or removal.
