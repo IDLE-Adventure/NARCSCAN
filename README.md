@@ -2,7 +2,7 @@ Welcome!
 
 This is a portscanner made entirely with Python.
 
-The portscanner currently utilizes AF.INET(IPv4) and SOCK.STREAM(TCP).
+The portscanner currently utilizes AF.INET(IPv4) and SOCK_STREAM(TCP).
 
 You can add hostname or IPv4 in adst(Add Destination).
 
