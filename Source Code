@@ -46,7 +46,7 @@ def dst():
     while True:
         prompt = input("DST~=> ").lower()
         if prompt == "cmds":
-            print("adst <- Add Destination/Target", "aports <- Add Ports", "rdsts <- Remove Destination/Target", "rports <- Remove Ports", "main <- Return to the main unit", "results <- Show config results", "scan <- Go to the portscan unit", sep="\n")
+            print("adst <- Add Destination/Target", "aports <- Add Ports", "rdst <- Remove Destination/Target", "rports <- Remove Ports", "main <- Return to the main unit", "results <- Show config results", "scan <- Go to the portscan unit", sep="\n")
 
         elif prompt == "adst":
             target = input("Dst/Target: ")
