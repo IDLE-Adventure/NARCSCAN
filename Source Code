@@ -8,6 +8,7 @@ Trying out a new way of creating code, experimental for me.
 """
 #Modules
 import socket
+import os
 
 #Lists, tuples
 HOST = []
@@ -20,7 +21,7 @@ def main():
     while True:
         prompt = input("MAIN~=> ").lower()
         if prompt == "cmds":
-            print("dst <- Go to the Destination/target config", "results <- Show config results", "scan <- Go to the portscan unit", sep="\n")
+            print("dst <- Go to the Destination/target config", "results <- Show config results", "clear <- clears output from terminal", "scan <- Go to the portscan unit", sep="\n")
 
         elif prompt == "dst":
             dst()
@@ -34,6 +35,9 @@ def main():
             portscan()
             break
 
+        elif prompt == "clear":
+            os.system("cls")
+
         else:
             print("Command does not exist. Use cmds to find out what commands there are. Different units have different commands.")
 
@@ -46,7 +50,7 @@ def dst():
     while True:
         prompt = input("DST~=> ").lower()
         if prompt == "cmds":
-            print("adst <- Add Destination/Target", "aports <- Add Ports", "rdst <- Remove Destination/Target", "rports <- Remove Ports", "main <- Return to the main unit", "results <- Show config results", "scan <- Go to the portscan unit", sep="\n")
+            print("adst <- Add Destination/Target", "aports <- Add Ports", "rdst <- Remove Destination/Target", "rports <- Remove Ports", "results <- Show config results", "clear <- clears output from terminal", "main <- Return to the main unit", "scan <- Go to the portscan unit", sep="\n")
 
         elif prompt == "adst":
             target = input("Dst/Target: ")
@@ -81,6 +85,9 @@ def dst():
         elif prompt == "results":
             print("Dsts/Targets: ", HOST)
             print("Ports: ", PORTS)
+
+        elif prompt == "clear":
+            os.system("cls")
 
         elif prompt == "main":
             main()
@@ -157,7 +164,7 @@ def portscan():
                 print("Not an integer.")                                
 
         elif prompt == "cmds":
-            print("start <- Start portscan", "qs <- Quickscan if you want to use range instead of manually input ports", "results <- Show config results",  "dst <- Go to Destination/target config", "main <- Return to the main unit", sep="\n")
+            print("start <- Start portscan", "qs <- Quickscan if you want to use range instead of manually input ports", "results <- Show config results", "clear <- clears output from terminal", "dst <- Go to Destination/target config", "main <- Return to the main unit", sep="\n")
         
         elif prompt == "dst":
             dst()
@@ -167,6 +174,9 @@ def portscan():
         elif prompt == "results":
             print("Dsts/Targets: ", HOST)
             print("Ports: ", PORTS)
+
+        elif prompt == "clear":
+            os.system("cls")
 
         elif prompt == "main":
             main()
