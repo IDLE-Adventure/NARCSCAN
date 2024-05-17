@@ -1,9 +1,11 @@
 """
-Made by github.com/IDLE-Adventure
-A basic portscanner in Python with some taste added to it in regards to navigation and cmds.
-Most of the print statements are for information gathering and can be blocked out with a simple # or removal.
+MIT License
+Copyright (c) 2024 IDLE-Adventure
 
+A portscanner in Python with some taste added to it in regards to navigation and cmds.
+Most of the print statements are for information gathering and can be blocked out with a simple # or removal.
 Trying out a new way of creating code, experimental for me.
+
 """
 #Modules
 import socket
@@ -18,7 +20,7 @@ def main():
     print("Use cmds for commands. Currently in the main unit.")
 
     while True:
-        prompt = input("MAIN~=> ").lower()
+        prompt = input("MAIN~> ").lower()
         if prompt == "cmds":
             print("dst <- Go to the Destination/target config", "results <- Show config results", "clear <- clears output from terminal", "scan <- Go to the portscan unit", sep="\n")
 
@@ -47,7 +49,7 @@ def main():
 def dst():
     print("Use cmds for commands", "Currently in the dst/target config unit")
     while True:
-        prompt = input("DST~=> ").lower()
+        prompt = input("DST~> ").lower()
         if prompt == "cmds":
             print("adst <- Add Destination/Target", "aports <- Add Ports", "rdst <- Remove Destination/Target", "rports <- Remove Ports", "results <- Show config results", "clear <- clears output from terminal", "main <- Return to the main unit", "scan <- Go to the portscan unit", sep="\n")
 
@@ -100,65 +102,51 @@ def dst():
             print("Command does not exist. Use cmds to find out what commands there are. Different units have different commands.")
 
         pass
+                
 
-def quickscan():
-        for qsScan_hosts in HOST:
-            for qsScan_ports in range(a, b+1): #One-up b due to not scanning the last port without the one-up.
-                try:
-                        print("SOCKET OPEN")
-                        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP/IP. Starts or restarts socket.
-                        qsSetup_HOST = socket.gethostbyname(qsScan_hosts)
-                        sock.connect((qsSetup_HOST, qsScan_ports)) #Connects socket.
-                        qsVersion = sock.recv(1024).decode("utf-8") #Fetches bytes from the host
-                        print("Host: ", qsSetup_HOST, "Port: ", qsScan_ports, "Version: ", qsVersion, "<OPEN")
-                        sock.close() #Closes socket so that it can be re-used.
-                        print("SOCKET CLOSED")
-                except:
-                        print("Host: ", qsScan_hosts, "Ports: ", qsScan_ports, "<CLOSED")
-                        sock.close() #Closes socket so that it can be re-used.
-                        print("SOCKET CLOSED. Caused by exception.") 
-                        
 
 def portscan():
     while True:
-        prompt = input("SCAN~=> ").lower()
+        prompt = input("SCAN~> ").lower()
 
-        if prompt == "start":
+        if prompt == "start": #Selective scan
             for Scan_hosts in HOST: #Iterates through HOST list
                 for Scan_ports in PORTS: #Iterates through PORTS list
                     try:
-                        print("SOCKET OPEN")
-                        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP/IP. Starts or restarts socket.
+
+                        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP/IP. Creates and re-creates the socket.
                         Setup_HOST = socket.gethostbyname(Scan_hosts)
                         sock.connect((Setup_HOST, Scan_ports)) #Connects socket.
-                        Version = sock.recv(1024).decode("utf-8") #Fetches bytes from the host
-                        print("Host: ", Setup_HOST, "Port:", Scan_ports, "Version:", Version, "<OPEN")
+                        ServiceCheck = socket.getservbyport(Scan_ports)
+                        print("Host:", Setup_HOST, "Port:", Scan_ports, "Service:", ServiceCheck, "<OPEN")
                         sock.close() #Closes socket so that it can be re-used.
-                        print("SOCKET CLOSED")
-                    except:
-                        print("Host: ", Setup_HOST, "Port: ", Scan_ports, "<CLOSED")
-                        sock.close() #Closes socket so that it can be re-used.
-                        print("SOCKET CLOSED. Caused by exception.")
 
-        elif prompt == "qs":
+                    except:
+
+                        print("Host:", Setup_HOST, "Port:", Scan_ports, "<CLOSED")
+                        sock.close() #Closes socket so that it can be re-used.
+
+
+        elif prompt == "qs": #Quickscan
             try:
                 a = int(input("First Port: ")) #Use integer
                 b = int(input("Last Port: ")) #Use integer
                 for qsScan_hosts in HOST:
                     for qsScan_ports in range(a, b+1): #One-up b due to not scanning the last port without the one-up.
                             try:
-                                print("SOCKET OPEN")
-                                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP/IP. Starts or restarts socket.
+
+                                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP/IP. Creates and re-creates the socket.
                                 qsSetup_HOST = socket.gethostbyname(qsScan_hosts)
                                 sock.connect((qsSetup_HOST, qsScan_ports)) #Connects socket.
-                                qsVersion = sock.recv(1024).decode("utf-8") #Fetches bytes from the host
-                                print("Host: ", qsSetup_HOST, "Port: ", qsScan_ports, "Version: ", qsVersion, "<OPEN")
+                                qsServiceCheck = socket.getservbyport(qsScan_ports) #Gets the service on the port
+                                print("Host:", qsSetup_HOST, "Port:", qsScan_ports, "Service:", qsServiceCheck, "<OPEN")
                                 sock.close() #Closes socket so that it can be re-used.
-                                print("SOCKET CLOSED")
+
                             except:
+
                                 print("Host: ", qsScan_hosts, "Port: ", qsScan_ports, "<CLOSED")
                                 sock.close() #Closes socket so that it can be re-used.
-                                print("SOCKET CLOSED. Caused by exception.")
+
             except:
                 print("Not an integer.")                                
 
