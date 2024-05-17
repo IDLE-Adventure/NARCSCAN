@@ -11,6 +11,6 @@ You can either add ports manually(aports in the DST-unit) or use range to define
 There is also the ability to remove ports(rports in the DST-unit) and remove destinations(rdsts - in the DST-unit)
 
 ----
-I also tested socket.recv() and I received a message from the MobaXterm FTP client that I hosted and it is sort-of a "Version control", it is experimental while I am trying to figure it out. This was before I had separate branches for this. 
+I also tested socket.recv() and I received a message from the MobaXterm FTP client that I hosted and it is sort-of a "Version control", it is experimental while I am trying to figure it out. It can find services attached to (standard or non-standard)ports that send a message.
 
 Still a noob with Github but I am learning.
