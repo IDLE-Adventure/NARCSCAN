@@ -61,10 +61,15 @@ def dst():
         elif prompt == "aports":
             try:
                 port = int(input("Integer/Port: "))
-                PORTS.append(port)
-                print(PORTS,"|", port, "<-Successfully added to PORTS list")
-            except:
-                print(port, "<-Not an integer. Line 37")
+
+                try:
+                    PORTS.append(port)
+                    print(PORTS,"|", port, "<-Successfully added to PORTS list")
+                except:
+                    print(port, "<-Failed to remove port, or it doesn't exist in the first place.")
+
+            except ValueError as Port_VE: #Integer was not used.
+                print(Port_VE)
             
 
         elif prompt == "rdst":
@@ -80,8 +85,12 @@ def dst():
                 port = int(input("Integer/Port: "))
                 PORTS.remove(port)
                 print(PORTS,"|", port, "<-Successfully removed from PORTS list")
-            except:
-                print(port, "<-Not an integer. Line 56")
+
+            except UnboundLocalError as Port_ULE: #Does not exist in the list.
+                print(Port_ULE)
+
+            except ValueError as Port_VE: #Integer was not used.
+                print(Port_VE)
 
         elif prompt == "results":
             print("Dsts/Targets: ", HOST)
@@ -147,21 +156,19 @@ def portscan():
                                 print("Host: ", qsScan_Hosts, "Port: ", qsScan_Ports, "<CLOSED")
                                 sock.close() #Closes socket so that it can be re-used.
 
-            except:
+            except ValueError: #Integer was not used.
                 print("Not an integer.")        
 
         elif prompt == "sc":          
-            try:
-                sca = int(input("First Port: ")) #Use integer
-                scb = int(input("Last Port: ")) #Use integer
-                for scScan_Hosts in HOST:
-                    for scScan_Ports in range(sca, scb+1): #One-up b due to not scanning the last port without the one-up.                
+            for scScan_Hosts in HOST:
+                    for scScan_Ports in PORTS: #One-up b due to not scanning the last port without the one-up.                
                         try:
 
                             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP/IP. Creates and re-creates the socket.
                             scSetup_HOST = socket.gethostbyname(scScan_Hosts)
                             sock.connect((scSetup_HOST, scScan_Ports)) #Connects socket.
                             scServiceCheck = socket.getservbyport(scScan_Ports) #Gets the service on the port
+                            sock.settimeout(5)
                             scServiceVersion = sock.recv(2048).decode("utf-8")
                             print("Host:", scSetup_HOST, "Port:", scScan_Ports, "Service:", scServiceCheck, "<OPEN")
                             print(scServiceVersion)
@@ -169,13 +176,41 @@ def portscan():
 
                         except:
 
-                            print("Host: ", scScan_Hosts, "Port: ", scScan_Ports, "<CLOSED")
+                            print("Host: ", scScan_Hosts, "Port: ", scScan_Ports, "<CLOSED or socket timer ran out so it doesn't hang")
                             sock.close() #Closes socket so that it can be re-used.
-            except:
-                print("Not an integer.")
+        
+        elif prompt == "scqs":
+            try:
+                scqsa = int(input("First Port: ")) #Use integer
+                scqsb = int(input("Last Port: ")) #Use integer 
+                try:
+                    timer = int(input("Set timer in seconds: "))
+                    for scqsScan_Hosts in HOST:
+                            for scqsScan_Ports in range(scqsa, scqsb+1): #One-up b due to not scanning the last port without the one-up.                
+                                try:
+
+                                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP/IP. Creates and re-creates the socket.
+                                    scqsSetup_HOST = socket.gethostbyname(scqsScan_Hosts)
+                                    sock.connect((scqsSetup_HOST, scqsScan_Ports)) #Connects socket.
+                                    scqsServiceCheck = socket.getservbyport(scqsScan_Ports) #Gets the service on the port
+                                    sock.settimeout(timer)
+                                    scqsServiceVersion = sock.recv(2048).decode("utf-8")
+                                    print("Host:", scqsSetup_HOST, "Port:", scqsScan_Ports, "Service:", scqsServiceCheck, "<OPEN")
+                                    print(scqsServiceVersion)
+                                    sock.close() #Closes socket so that it can be re-used.
+
+                                except:
+
+                                    print("Host: ", scqsScan_Hosts, "Port: ", scqsScan_Ports, "<CLOSED or socket timer ran out so socket doesn't hang")
+                                    sock.close() #Closes socket so that it can be re-used.
+                except ValueError as timer_VE: #Integer was not used.
+                    print(timer_VE, "Not an integer.")
+            except ValueError: #Integer was not used.
+                print("Not an integer.") 
+
 
         elif prompt == "cmds":
-            print("start <- Start portscan", "qs <- Quickscan if you want to use range instead of manually input ports", "sc <- Service Version check, check the version of a service on X port", "results <- Show config results", "clear <- clears output from terminal", "dst <- Go to Destination/target config", "main <- Return to the main unit", sep="\n")
+            print("start <- Start portscan", "qs <- Quickscan if you want to use range instead of manually input ports", "sc <- Service Version check, check the version of a service on X port", "scqs <- Same as sc and works like qs", "results <- Show config results", "clear <- clears output from terminal", "dst <- Go to Destination/target config", "main <- Return to the main unit", sep="\n")
         
         elif prompt == "dst":
             dst()
