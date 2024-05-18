@@ -1,5 +1,7 @@
 Welcome!
 
+NARCSCAN = Network Analysis and Reconnaissance Combination - SCAN
+
 This is a portscanner made entirely with Python.
 
 The portscanner currently utilizes AF_INET(IPv4) and SOCK_STREAM(TCP).
