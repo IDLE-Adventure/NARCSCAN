@@ -61,10 +61,15 @@ def dst():
         elif prompt == "aports":
             try:
                 port = int(input("Integer/Port: "))
-                PORTS.append(port)
-                print(PORTS,"|", port, "<-Successfully added to PORTS list")
-            except:
-                print(port, "<-Not an integer. Line 37")
+
+                try:
+                    PORTS.append(port)
+                    print(PORTS,"|", port, "<-Successfully added to PORTS list")
+                except:
+                    print(port, "<-Failed to remove port, or it doesn't exist in the first place.")
+
+            except ValueError as Port_VE: #Integer was not used.
+                print(Port_VE)
             
 
         elif prompt == "rdst":
@@ -80,8 +85,12 @@ def dst():
                 port = int(input("Integer/Port: "))
                 PORTS.remove(port)
                 print(PORTS,"|", port, "<-Successfully removed from PORTS list")
-            except:
-                print(port, "<-Not an integer. Line 56")
+
+            except UnboundLocalError as Port_ULE: #Does not exist in the list.
+                print(Port_ULE)
+
+            except ValueError as Port_VE: #Integer was not used.
+                print(Port_VE)
 
         elif prompt == "results":
             print("Dsts/Targets: ", HOST)
@@ -131,27 +140,77 @@ def portscan():
             try:
                 a = int(input("First Port: ")) #Use integer
                 b = int(input("Last Port: ")) #Use integer
-                for qsScan_hosts in HOST:
-                    for qsScan_ports in range(a, b+1): #One-up b due to not scanning the last port without the one-up.
+                for qsScan_Hosts in HOST:
+                    for qsScan_Ports in range(a, b+1): #One-up b due to not scanning the last port without the one-up.
                             try:
 
                                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP/IP. Creates and re-creates the socket.
-                                qsSetup_HOST = socket.gethostbyname(qsScan_hosts)
-                                sock.connect((qsSetup_HOST, qsScan_ports)) #Connects socket.
-                                qsServiceCheck = socket.getservbyport(qsScan_ports) #Gets the service on the port
-                                print("Host:", qsSetup_HOST, "Port:", qsScan_ports, "Service:", qsServiceCheck, "<OPEN")
+                                qsSetup_HOST = socket.gethostbyname(qsScan_Hosts)
+                                sock.connect((qsSetup_HOST, qsScan_Ports)) #Connects socket.
+                                qsServiceCheck = socket.getservbyport(qsScan_Ports) #Gets the service on the port
+                                print("Host:", qsSetup_HOST, "Port:", qsScan_Ports, "Service:", qsServiceCheck, "<OPEN")
                                 sock.close() #Closes socket so that it can be re-used.
 
                             except:
 
-                                print("Host: ", qsScan_hosts, "Port: ", qsScan_ports, "<CLOSED")
+                                print("Host: ", qsScan_Hosts, "Port: ", qsScan_Ports, "<CLOSED")
                                 sock.close() #Closes socket so that it can be re-used.
 
-            except:
-                print("Not an integer.")                                
+            except ValueError: #Integer was not used.
+                print("Not an integer.")        
+
+        elif prompt == "sc":          
+            for scScan_Hosts in HOST:
+                    for scScan_Ports in PORTS: #One-up b due to not scanning the last port without the one-up.                
+                        try:
+
+                            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP/IP. Creates and re-creates the socket.
+                            scSetup_HOST = socket.gethostbyname(scScan_Hosts)
+                            sock.connect((scSetup_HOST, scScan_Ports)) #Connects socket.
+                            scServiceCheck = socket.getservbyport(scScan_Ports) #Gets the service on the port
+                            sock.settimeout(5)
+                            scServiceVersion = sock.recv(2048).decode("utf-8")
+                            print("Host:", scSetup_HOST, "Port:", scScan_Ports, "Service:", scServiceCheck, "<OPEN")
+                            print(scServiceVersion)
+                            sock.close() #Closes socket so that it can be re-used.
+
+                        except:
+
+                            print("Host: ", scScan_Hosts, "Port: ", scScan_Ports, "<CLOSED or socket timer ran out so it doesn't hang")
+                            sock.close() #Closes socket so that it can be re-used.
+        
+        elif prompt == "scqs":
+            try:
+                scqsa = int(input("First Port: ")) #Use integer
+                scqsb = int(input("Last Port: ")) #Use integer 
+                try:
+                    timer = int(input("Set timer in seconds: "))
+                    for scqsScan_Hosts in HOST:
+                            for scqsScan_Ports in range(scqsa, scqsb+1): #One-up b due to not scanning the last port without the one-up.                
+                                try:
+
+                                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #IPv4, TCP/IP. Creates and re-creates the socket.
+                                    scqsSetup_HOST = socket.gethostbyname(scqsScan_Hosts)
+                                    sock.connect((scqsSetup_HOST, scqsScan_Ports)) #Connects socket.
+                                    scqsServiceCheck = socket.getservbyport(scqsScan_Ports) #Gets the service on the port
+                                    sock.settimeout(timer)
+                                    scqsServiceVersion = sock.recv(2048).decode("utf-8")
+                                    print("Host:", scqsSetup_HOST, "Port:", scqsScan_Ports, "Service:", scqsServiceCheck, "<OPEN")
+                                    print(scqsServiceVersion)
+                                    sock.close() #Closes socket so that it can be re-used.
+
+                                except:
+
+                                    print("Host: ", scqsScan_Hosts, "Port: ", scqsScan_Ports, "<CLOSED or socket timer ran out so socket doesn't hang")
+                                    sock.close() #Closes socket so that it can be re-used.
+                except ValueError as timer_VE: #Integer was not used.
+                    print(timer_VE, "Not an integer.")
+            except ValueError: #Integer was not used.
+                print("Not an integer.") 
+
 
         elif prompt == "cmds":
-            print("start <- Start portscan", "qs <- Quickscan if you want to use range instead of manually input ports", "results <- Show config results", "clear <- clears output from terminal", "dst <- Go to Destination/target config", "main <- Return to the main unit", sep="\n")
+            print("start <- Start portscan", "qs <- Quickscan if you want to use range instead of manually input ports", "sc <- Service Version check, check the version of a service on X port", "scqs <- Same as sc and works like qs", "results <- Show config results", "clear <- clears output from terminal", "dst <- Go to Destination/target config", "main <- Return to the main unit", sep="\n")
         
         elif prompt == "dst":
             dst()
