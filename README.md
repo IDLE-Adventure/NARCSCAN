@@ -1,6 +1,6 @@
 Welcome!
 
-NARCSCAN = Network Analysis and Reconnaissance Combination - SCAN
+NARCSCAN = Network Analysis and Reconnaissance Controller - SCAN
 
 This is a portscanner made entirely with Python.
 
